@@ -13,13 +13,9 @@ import { ChatBotApi } from "../chatbot-api";
 import { Website } from "./generate-app"
 import { NagSuppressions } from "cdk-nag";
 import { Utils } from "../shared/utils"
-import { OIDCIntegrationName } from "../constants";
 
-export interface UserInterfaceProps {
-  //readonly userPoolId: string;
-  //readonly userPoolClientId: string;
-  readonly api: ChatBotApi;
-  //readonly cognitoDomain : string;
+export interface UserInterfaceProps {  
+  readonly api: ChatBotApi;  
 }
 
 export class UserInterface extends Construct {
@@ -59,9 +55,7 @@ export class UserInterface extends Construct {
 
     const exportsAsset = s3deploy.Source.jsonData("aws-exports.json", {
       Auth: {
-        region: cdk.Aws.REGION,
-        //userPoolId: props.userPoolId,
-        //userPoolWebClientId: props.userPoolClientId,
+        region: cdk.Aws.REGION,        
         oauth: {
           //domain: props.cognitoDomain.concat(".auth.us-east-1.amazoncognito.com"),
           scope: ["aws.cognito.signin.user.admin","email", "openid", "profile"],
@@ -69,10 +63,8 @@ export class UserInterface extends Construct {
           // redirectSignOut: "https://myapplications.microsoft.com/",
           responseType: "code"
         }
-      },
-      httpEndpoint : props.api.httpAPI.restAPI.url,
+      },     
       wsEndpoint : props.api.wsAPI.wsAPIStage.url,
-      federatedSignInProvider : OIDCIntegrationName
     });
 
     const asset = s3deploy.Source.asset(appPath, {
