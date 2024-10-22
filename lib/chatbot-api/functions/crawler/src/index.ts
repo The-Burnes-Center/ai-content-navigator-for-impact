@@ -1,7 +1,5 @@
 import { WebScraperDataProvider } from "./scraper/WebScraper"
-import fs from "fs";
 import { Document } from "./lib/entities";
-import * as path from "path";
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 console.log("started!")
@@ -13,7 +11,7 @@ scraper.setOptions({
     "https://www.mass.gov/orgs/executive-office-of-energy-and-environmental-affairs",
     "https://www.mass.gov/orgs/eea-office-of-grants-and-technical-assistance",
     "https://www.mass.gov/orgs/massachusetts-department-of-environmental-protection",
-    "https://www.mass.gov/orgs/massachusetts-department-of-agricultural-resources",    
+    "https://www.mass.gov/orgs/massachusetts-department-of-agricultural-resources"     
   ],
   mode: "crawl",
   concurrentRequests: 4,
@@ -23,8 +21,10 @@ scraper.setOptions({
       ".*massachusetts-state-organizations-a-to-z.*", ".*list.*",
       ".*help-us-test.*", ".*user-panel.*", ".*massgov-site-policies.*",
       ".*privacypolicy.*", ".*hunting.*", ".*event.*", ".*executive-orders.*", ".*news.*", ".*fishing.*", ".*dcr-updates.*"],
-    maxCrawledLinks: 1000,
-    maxDepth: 2,        
+    maxCrawledLinks: 2000,
+    maxDepth: 3,
+    // mode: "fast"
+    
   }
 })
 
@@ -59,12 +59,11 @@ function generateTitle(document: Document): string {
   }
 }
 
-async function writeDocumentsToMarkdownFiles(documents: Document[]) {
+async function writeDocumentsToMarkdownFiles(documents: Document[]) {  
 
-  for (const document of documents) {
+  documents.forEach(async (document, index) => {
     const title = generateTitle(document);
     const fileName = `${title}.md`;
-    const filePath = path.join('./grants-crawl', fileName);
 
     // Create the Markdown content
     const markdownContent = `# ${document.metadata.sourceURL || 'Unknown Source'}
@@ -77,34 +76,24 @@ async function writeDocumentsToMarkdownFiles(documents: Document[]) {
     Provider: ${document.provider || 'Unknown'}
     `;
 
-    // Write the Markdown content to the file
-    // 
-    console.log("saving " + fileName)
-    fs.writeFileSync(filePath, markdownContent, 'utf-8');
-    // const s3 = new S3Client({ region: 'us-east-1' });
-    // const command = new PutObjectCommand({ Bucket: process.env.BUCKET, Key: fileName, Body: markdownContent });
-    // try {
-    //   console.log("writing to s3")
-    //   const response = await s3.send(command);
-    //   console.log(response);
-    // } catch (e) {
-    //   console.log(e)
-    // }
-  };
+    // Write the Markdown content to the file    
+    const s3 = new S3Client({ region: 'us-east-1' });
+    const command = new PutObjectCommand({ Bucket: process.env.BUCKET, Key: fileName, Body: markdownContent });
+    await s3.send(command);
+  });
 
   console.log(`Successfully wrote ${documents.length} documents as Markdown files to S3`);
 }
 
 export const handler = async (event) => {
-  const documents = await scraper.getDocuments(false);
+  const documents = scraper.getDocuments(false);
 
-  console.log(documents.length)
-
-  await writeDocumentsToMarkdownFiles(documents);
-  let end = Date.now();
-  console.log(`Full time: ${end - start}`)  
-  console.timeEnd("crawl time");
+  documents.then(async (value) => {
+    console.log(value.length)
+    await writeDocumentsToMarkdownFiles(value)
+    let end = Date.now();
+    console.log(`Full time: ${end - start}`)  
+    console.timeEnd("crawl time");
+  });
 
 }
-
-handler("");
