@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import {
   BrowserRouter,
-  HashRouter,
   Outlet,
   Route,
   Routes,
@@ -10,13 +9,6 @@ import {
 import { AppContext } from "./common/app-context";
 import GlobalHeader from "./components/global-header";
 import Playground from "./pages/chatbot/playground/playground";
-import NotFound from "./pages/not-found";
-// import WorkspacePane from "./pages/admin/workspace";
-//import AddData from "./pages/admin/add-data";
-//import WorkspacePane from "./pages/admin/workspace";
-//import UserFeedbackPage from "./pages/admin/user-feedback";
-//import SessionPage from "./pages/chatbot/sessions/sessions"
-import { v4 as uuidv4 } from "uuid";
 import "./styles/app.scss";
 
 function App() {
@@ -34,16 +26,12 @@ function App() {
             <Route
                 index
                 path="/"
-                element={<Navigate to={`/chatbot/playground/${uuidv4()}`} replace />}
+                element={<Navigate to={`/chatbot/playground`} replace />}
             />            
             <Route path="/chatbot" element={<Outlet />}>
-              <Route path="playground" element={<Playground />} />
-              <Route path="playground/:sessionId" element={<Playground />} />
-              {/* <Route path="sessions" element={<SessionPage />} /> if we want history*/}
-             {/* <Route path="data" element={<WorkspacePane />} />    */}
-             {/* <Route path="user-feedback" element={<UserFeedbackPage />} />                            */}
+              <Route path="playground" element={<Playground />} />             
             </Route>            
-            <Route path="*" element={<Navigate to={`/chatbot/playground/${uuidv4()}`} replace />} />
+            <Route path="*" element={<Navigate to={`/chatbot/playground`} replace />} />
           </Routes>
         </div>
       </Router>
