@@ -54,7 +54,7 @@ export class KnowledgeBaseStack extends cdk.Stack {
     )
 
 
-    const knowledgeBase = new bedrock.CfnKnowledgeBase(this, 'KnowledgeBase', {
+    const knowledgeBase = new bedrock.CfnKnowledgeBase(scope, 'KnowledgeBase', {
       knowledgeBaseConfiguration: {
         type: 'VECTOR',
         vectorKnowledgeBaseConfiguration: {
@@ -85,7 +85,7 @@ export class KnowledgeBaseStack extends cdk.Stack {
     knowledgeBase.addDependency(props.openSearch.openSearchCollection);
     knowledgeBase.node.addDependency(props.openSearch.lambdaCustomResource)
 
-    const dataSource = new bedrock.CfnDataSource(this, 'S3DataSource', {
+    const dataSource = new bedrock.CfnDataSource(scope, 'S3DataSource', {
       dataSourceConfiguration: {
         type: 'S3',
         s3Configuration: {

@@ -19,8 +19,8 @@ export class WebsocketBackendAPI extends Construct {
   ) {
     super(scope, id);
     // Create the main Message Topic acting as a message bus
-    const webSocketApi = new apigwv2.WebSocketApi(this, 'WS-API');
-    const webSocketApiStage =  new apigwv2.WebSocketStage(this, 'WS-API-prod', {
+    const webSocketApi = new apigwv2.WebSocketApi(scope, 'WS-API');
+    const webSocketApiStage =  new apigwv2.WebSocketStage(scope, 'WS-API-prod', {
       webSocketApi,
       stageName: 'prod',
       autoDeploy: true,      

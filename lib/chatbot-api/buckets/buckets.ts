@@ -9,7 +9,7 @@ export class S3BucketStack extends cdk.Stack {
     super(scope, id, props);
 
     // Create a new S3 bucket
-    this.knowledgeBucket = new s3.Bucket(this, 'KBSourceBucket', {      
+    this.knowledgeBucket = new s3.Bucket(scope, 'KBSourceBucket', {      
       versioned: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
