@@ -1,12 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as path from 'path';
-import * as lambda from 'aws-cdk-lib/aws-lambda'
-import * as triggers from 'aws-cdk-lib/triggers'
-import * as cr from 'aws-cdk-lib/custom-resources'
 
-import { aws_opensearchserverless as opensearchserverless } from 'aws-cdk-lib';
 import { aws_bedrock as bedrock } from 'aws-cdk-lib';
 
 import { Construct } from "constructs";

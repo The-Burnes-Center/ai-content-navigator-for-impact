@@ -1,7 +1,5 @@
-import * as s3 from "aws-cdk-lib/aws-s3";
-import * as iam from "aws-cdk-lib/aws-iam";
+import { aws_bedrock as bedrock } from 'aws-cdk-lib';
 import * as cdk from "aws-cdk-lib";
-import * as path from "path";
 
 import { WebsocketBackendAPI } from "./gateway/websocket-api"
 import { LambdaFunctionStack } from "./functions/functions"
@@ -30,9 +28,9 @@ export class ChatBotApi extends Construct {
     const lambdaFunctions = new LambdaFunctionStack(this, "LambdaFunctions",
       {
         wsApiEndpoint: websocketBackend.wsAPIStage.url,        
-        kendraIndex: kendra.kendraIndex,
-        kendraSource: kendra.kendraSource,        
-        knowledgeBucket: buckets.kendraBucket
+        KBIndex: knowledgeBase.knowledgeBase,
+        KBSource: knowledgeBase.dataSource,      
+        knowledgeBucket: buckets.knowledgeBucket
       })
 
     websocketBackend.wsAPI.addRoute('getChatbotResponse', {

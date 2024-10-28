@@ -5,13 +5,13 @@ import * as path from 'path';
 // Import Lambda L2 construct
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as kendra from 'aws-cdk-lib/aws-kendra';
 import * as s3 from "aws-cdk-lib/aws-s3";
+import { aws_bedrock as bedrock } from 'aws-cdk-lib';
 
 interface LambdaFunctionStackProps {  
   readonly wsApiEndpoint : string;    
-  readonly kendraIndex : kendra.CfnIndex;
-  readonly kendraSource : kendra.CfnDataSource;  
+  readonly KBIndex : bedrock.CfnKnowledgeBase;
+  readonly KBSource : bedrock.CfnDataSource;  
   readonly knowledgeBucket : s3.Bucket;
 }
 
@@ -28,7 +28,7 @@ export class LambdaFunctionStack extends cdk.Stack {
         handler: 'index.handler', // Points to the 'hello' file in the lambda directory
         environment : {
           "WEBSOCKET_ENDPOINT" : props.wsApiEndpoint.replace("wss","https"),
-          "INDEX_ID" : props.kendraIndex.attrId
+          "INDEX_ID" : props.KBIndex.attrKnowledgeBaseId
         },
         timeout: cdk.Duration.seconds(300)
       });
@@ -43,9 +43,9 @@ export class LambdaFunctionStack extends cdk.Stack {
       websocketAPIFunction.addToRolePolicy(new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: [
-          'kendra:Retrieve'
+          'bedrock:Retrieve'
         ],
-        resources: [props.kendraIndex.attrArn]
+        resources: [props.KBIndex.attrKnowledgeBaseId]
       })); 
       
       const scraperFunction = new lambda.Function(this, 'ScraperFunction', {
@@ -65,7 +65,7 @@ export class LambdaFunctionStack extends cdk.Stack {
         environment : {
           "BUCKET" : props.knowledgeBucket.bucketName
         },
-        timeout: cdk.Duration.seconds(300)
+        timeout: cdk.Duration.seconds(900)
       });
       
       this.chatFunction = websocketAPIFunction;    
