@@ -42,7 +42,7 @@ export class OpenSearchStack extends cdk.Stack {
     const networkPolicy = new opensearchserverless.CfnSecurityPolicy(scope, "OSSNetworkPolicy", {
       name: `${stackName.toLowerCase().slice(0,10)}-oss-network-policy`,
       type : "network",
-      policy : `[{"Rules":[{"ResourceType":"dashboard","Resource":["collection/${this.collectionName}"]},{"ResourceType":"collection","Resource":["collection/${this.collectionName}"]}],"AllowFromPublic":true}]`,
+      policy : `{"Rules":[{"ResourceType":"dashboard","Resource":["collection/${this.collectionName}"]},{"ResourceType":"collection","Resource":["collection/${this.collectionName}"]}],"AllowFromPublic":true}`,
     })
 
     const indexFunctionRole = new iam.Role(scope, 'IndexFunctionRole', {      
