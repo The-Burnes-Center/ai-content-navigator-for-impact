@@ -45,7 +45,7 @@ export class LambdaFunctionStack extends cdk.Stack {
         actions: [
           'bedrock:Retrieve'
         ],
-        resources: [props.KBIndex.attrKnowledgeBaseId]
+        resources: [props.KBIndex.attrKnowledgeBaseArn]
       })); 
       
       const scraperFunction = new lambda.Function(scope, 'ScraperFunction', {
