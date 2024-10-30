@@ -20,9 +20,9 @@ export class WebCrawler {
   private crawledUrls: Map<string, string> = new Map();  
   private robotsTxtUrl: string;
   private robots: any;  
-  private logger = fs.createWriteStream('crawl_log.txt', {
-    flags: 'a' // 'a' means appending (old data will be preserved)
-  });
+  // private logger = fs.createWriteStream('crawl_log.txt', {
+  //   flags: 'a' // 'a' means appending (old data will be preserved)
+  // });
 
   constructor({
     initialUrl,
@@ -289,10 +289,10 @@ export class WebCrawler {
             !this.initialUrls.includes(fullUrl) &&
             this.robots.isAllowed(fullUrl, "FireCrawlAgent")
           ) {                      
-            this.logger.write(`\nFound: ${fullUrl} on ${parentURL}`)
+            // this.logger.write(`\nFound: ${fullUrl} on ${parentURL}`)
             links.push({url: fullUrl, html: content});
           } else {
-            this.logger.write(`\nSkipped: ${fullUrl} on ${parentURL}`)
+            // this.logger.write(`\nSkipped: ${fullUrl} on ${parentURL}`)
             // console.log(`Skipping link: ${fullUrl}`);
           }
         }

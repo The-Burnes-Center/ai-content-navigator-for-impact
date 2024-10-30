@@ -37,9 +37,9 @@ export class WebScraperDataProvider {
     "gpt-4-turbo";
   private crawlerMode: string = "default";
 
-  private logger = fs.createWriteStream('log.txt', {
-    flags: 'a' // 'a' means appending (old data will be preserved)
-  });
+  // private logger = fs.createWriteStream('log.txt', {
+  //   flags: 'a' // 'a' means appending (old data will be preserved)
+  // });
   
 
   authorize(): void {
@@ -73,7 +73,7 @@ export class WebScraperDataProvider {
             existingHTML
           );
           console.log(`Scraping: ${url}`)
-          this.logger.write(`\nScraping: ${url}`)
+          // this.logger.write(`\nScraping: ${url}`)
           processedUrls++;
           if (inProgress) {
             inProgress({
