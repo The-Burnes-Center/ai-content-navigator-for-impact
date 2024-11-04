@@ -66,7 +66,7 @@ export class WebScraperDataProvider {
         batchUrls.map(async (url, index) => {
           const existingHTML = allHtmls ? allHtmls[i + index] : "";
           const delay = (m) => new Promise(resolve => setTimeout(resolve, m));
-          await delay(Math.random() * 2000);
+          await delay(Math.random() * 5000);
           const result = await scrapSingleUrl(
             url,
             this.pageOptions,

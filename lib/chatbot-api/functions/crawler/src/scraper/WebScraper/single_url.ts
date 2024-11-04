@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import axios from "axios";
 import { ScrapingBeeClient } from "scrapingbee";
 import { extractMetadata } from "./utils/metadata";
 import dotenv from "dotenv";
@@ -27,7 +28,7 @@ export async function generateRequestParams(
   const defaultParams = {
     url: url,
     params: { timeout: timeout, wait_browser: wait_browser },
-    headers: { "ScrapingService-Request": "TRUE" },
+    // headers: { "ScrapingService-Request": "TRUE" },
   };
 
   try {
@@ -151,8 +152,8 @@ export async function scrapWithPlaywright(url: string): Promise<string> {
 
 export async function scrapWithFetch(url: string): Promise<string> {
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
+    const response = await axios.get(url);
+    if (!(response.status == 200)) {
       console.error(
         `[Fetch] Error fetching url: ${url} with status: ${response.status}`
       );
@@ -163,7 +164,7 @@ export async function scrapWithFetch(url: string): Promise<string> {
     if (contentType && contentType.includes('application/pdf')) {
       return fetchAndProcessPdf(url);
     } else {
-      const text = await response.text();
+      const text = await response.data;
       return text;
     }
   } catch (error) {
