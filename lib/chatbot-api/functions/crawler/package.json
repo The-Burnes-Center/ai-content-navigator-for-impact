@@ -64,6 +64,7 @@
     "luxon": "^3.4.3",
     "md5": "^2.3.0",
     "moment": "^2.29.4",
+    "node-polyfill-webpack-plugin": "^4.0.0",
     "pdf-parse": "^1.1.1",
     "pos": "^0.4.2",
     "robots-parser": "^3.0.1",

@@ -67,6 +67,14 @@ export class LambdaFunctionStack extends cdk.Stack {
         },
         timeout: cdk.Duration.seconds(900)
       });
+
+      scraperFunction.addToRolePolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          's3:*'
+        ],
+        resources: [props.knowledgeBucket.bucketArn, props.knowledgeBucket.bucketArn+"/*" ]
+      }));
       
       this.chatFunction = websocketAPIFunction;    
 
