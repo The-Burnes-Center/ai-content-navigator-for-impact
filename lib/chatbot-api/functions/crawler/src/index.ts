@@ -22,7 +22,7 @@ scraper.setOptions({
       ".*help-us-test.*", ".*user-panel.*", ".*massgov-site-policies.*",
       ".*privacypolicy.*", ".*hunting.*", ".*event.*", ".*executive-orders.*", ".*news.*", ".*fishing.*", ".*dcr-updates.*"],
     maxCrawledLinks: 2000,
-    maxDepth: 3,
+    maxDepth: 2,
     // mode: "fast"
     
   }
@@ -86,14 +86,15 @@ async function writeDocumentsToMarkdownFiles(documents: Document[]) {
 }
 
 export const handler = async (event) => {
-  const documents = scraper.getDocuments(false);
-
-  documents.then(async (value) => {
-    console.log(value.length)
-    await writeDocumentsToMarkdownFiles(value)
-    let end = Date.now();
-    console.log(`Full time: ${end - start}`)  
-    console.timeEnd("crawl time");
-  });
+  console.log(event);
+  const documents = await scraper.getDocuments(false);
+  console.log("got docs!")
+  // documents.then(async (value) => {
+  console.log(documents.length);
+  await writeDocumentsToMarkdownFiles(documents);
+  let end = Date.now();
+  console.log(`Full time: ${end - start}`)  
+  console.timeEnd("crawl time");
+  // });
 
 }
