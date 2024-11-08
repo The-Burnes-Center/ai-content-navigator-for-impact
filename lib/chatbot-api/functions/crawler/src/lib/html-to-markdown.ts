@@ -1,28 +1,31 @@
 
 // import * as TurndownService from "turndown";
 // import * as turndownPluginGfm from 'joplin-turndown-plugin-gfm';
+import TurndownService from 'turndown';
+import { gfm } from 'joplin-turndown-plugin-gfm';
 
 export function parseMarkdown(html: string) {
-  var TurndownService  = require("turndown");
-  var turndownPluginGfm = require('joplin-turndown-plugin-gfm')
+  // var TurndownService  = require("turndown");
+  // var turndownPluginGfm = require('joplin-turndown-plugin-gfm')
 
   console.log(typeof TurndownService)
   const turndownService = new TurndownService();
   turndownService.addRule("inlineLink", {
-    filter: function (node, options) {
+    filter: function (node: HTMLElement, options: any) {
       return (
         options.linkStyle === "inlined" &&
         node.nodeName === "A" &&
-        node.getAttribute("href")
-      );
+        node.getAttribute("href") !== null
+      );    
     },
-    replacement: function (content, node) {
-      var href = node.getAttribute("href").trim();
-      var title = node.title ? ' "' + node.title + '"' : "";
-      return "[" + content.trim() + "](" + href + title + ")\n";
+    replacement: function (content: string, node: HTMLElement) {
+      const href = node.getAttribute("href")!.trim();
+      const title = node.title ? ` "${node.title}"` : "";
+      return `[${content.trim()}](${href}${title})\n`;
     },
   });
-  var gfm = turndownPluginGfm.gfm;
+
+  // var gfm = turndownPluginGfm.gfm;
   turndownService.use(gfm);
   let markdownContent = turndownService.turndown(html);
 
