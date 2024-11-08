@@ -58,7 +58,7 @@ function generateTitle(document: Document): string {
 
 async function writeDocumentsToMarkdownFiles(documents: Document[]) {  
 
-  documents.forEach(async (document, index) => {
+  for (const document of documents) {
     const title = generateTitle(document);
     const fileName = `${title}.md`;
 
@@ -77,7 +77,7 @@ async function writeDocumentsToMarkdownFiles(documents: Document[]) {
     const s3 = new S3Client({ region: 'us-east-1' });
     const command = new PutObjectCommand({ Bucket: process.env.BUCKET, Key: fileName, Body: markdownContent });
     await s3.send(command);
-  });
+  };
 
   console.log(`Successfully wrote ${documents.length} documents as Markdown files to S3`);
 }
