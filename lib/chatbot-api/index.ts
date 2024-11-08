@@ -40,11 +40,15 @@ export class ChatBotApi extends Construct {
       integration: new WebSocketLambdaIntegration('chatbotConnectionIntegration', lambdaFunctions.chatFunction),      
     });
     websocketBackend.wsAPI.addRoute('$default', {
-      integration: new WebSocketLambdaIntegration('chatbotConnectionIntegration', lambdaFunctions.chatFunction),      
+      integration: new WebSocketLambdaIntegration('chatbotConnectionIntegration', lambdaFunctions.chatFunction),
+      // authorizer: wsAuthorizer
     });
     websocketBackend.wsAPI.addRoute('$disconnect', {
-      integration: new WebSocketLambdaIntegration('chatbotDisconnectionIntegration', lambdaFunctions.chatFunction),      
-    });
+      integration: new WebSocketLambdaIntegration('chatbotDisconnectionIntegration', lambdaFunctions.chatFunction),
+      // authorizer: wsAuthorizer
+    });    
+
+    websocketBackend.wsAPI.grantManageConnections(lambdaFunctions.chatFunction);
     
     // Prints out the AppSync GraphQL API key to the terminal
     new cdk.CfnOutput(this, "WS-API - apiEndpoint", {
