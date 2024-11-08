@@ -8,10 +8,7 @@ let start = Date.now();
 const scraper = new WebScraperDataProvider();
 scraper.setOptions({  
   urls: [
-    "https://www.mass.gov/orgs/executive-office-of-energy-and-environmental-affairs",
-    "https://www.mass.gov/orgs/eea-office-of-grants-and-technical-assistance",
-    "https://www.mass.gov/orgs/massachusetts-department-of-environmental-protection",
-    "https://www.mass.gov/orgs/massachusetts-department-of-agricultural-resources"     
+    "https://www.mass.gov/crawler-links/pages?org=&langcode=All&labels=AI+search+crawler+-+Grants+%2897201%29+-+Label&collection="     
   ],
   mode: "crawl",
   concurrentRequests: 4,
@@ -61,7 +58,7 @@ function generateTitle(document: Document): string {
 
 async function writeDocumentsToMarkdownFiles(documents: Document[]) {  
 
-  documents.forEach(async (document, index) => {
+  for (const document of documents) {
     const title = generateTitle(document);
     const fileName = `${title}.md`;
 
@@ -76,11 +73,11 @@ async function writeDocumentsToMarkdownFiles(documents: Document[]) {
     Provider: ${document.provider || 'Unknown'}
     `;
 
-    // Write the Markdown content to the file    
+    // Write the Markdown content to the file
     const s3 = new S3Client({ region: 'us-east-1' });
     const command = new PutObjectCommand({ Bucket: process.env.BUCKET, Key: fileName, Body: markdownContent });
     await s3.send(command);
-  });
+  };
 
   console.log(`Successfully wrote ${documents.length} documents as Markdown files to S3`);
 }
