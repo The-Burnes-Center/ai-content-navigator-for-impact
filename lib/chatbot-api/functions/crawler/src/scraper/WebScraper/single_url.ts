@@ -1,6 +1,5 @@
 import * as cheerio from "cheerio";
 import axios from "axios";
-import { ScrapingBeeClient } from "scrapingbee";
 import { extractMetadata } from "./utils/metadata";
 import dotenv from "dotenv";
 import { Document, PageOptions } from "../../lib/entities";
@@ -12,10 +11,8 @@ import { fetchAndProcessPdf } from "./utils/pdfProcessor";
 dotenv.config();
 
 const baseScrapers = [
-  "fire-engine",
-  "scrapingBee",
-  "playwright",
-  "scrapingBeeLoad",
+  "fire-engine",  
+  "playwright",  
   "fetch",
 ] as const;
 
@@ -80,76 +77,6 @@ export async function scrapWithFireEngine(
   }
 }
 
-export async function scrapWithScrapingBee(
-  url: string,
-  wait_browser: string = "domcontentloaded",
-  timeout: number = 15000
-): Promise<string> {
-  try {
-    const client = new ScrapingBeeClient(process.env.SCRAPING_BEE_API_KEY);
-    const clientParams = await generateRequestParams(
-      url,
-      wait_browser,
-      timeout
-    );
-
-    const response = await client.get(clientParams);
-
-    if (response.status !== 200 && response.status !== 404) {
-      console.error(
-        `[ScrapingBee] Error fetching url: ${url} with status code ${response.status}`
-      );
-      return "";
-    }
-    
-    const contentType = response.headers['content-type'];
-    if (contentType && contentType.includes('application/pdf')) {
-      return fetchAndProcessPdf(url);
-    } else {
-      const decoder = new TextDecoder();
-      const text = decoder.decode(response.data);
-      return text;
-    }
-  } catch (error) {
-    console.error(`[ScrapingBee][c] Error fetching url: ${url} -> ${error}`);
-    return "";
-  }
-}
-
-export async function scrapWithPlaywright(url: string): Promise<string> {
-  try {
-    const reqParams = await generateRequestParams(url);
-    const wait_playwright = reqParams["params"]?.wait ?? 0;
-
-    const response = await fetch(process.env.PLAYWRIGHT_MICROSERVICE_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ url: url, wait: wait_playwright }),
-    });
-
-    if (!response.ok) {
-      console.error(
-        `[Playwright] Error fetching url: ${url} with status: ${response.status}`
-      );
-      return "";
-    }
-
-    const contentType = response.headers['content-type'];
-    if (contentType && contentType.includes('application/pdf')) {
-      return fetchAndProcessPdf(url);
-    } else {
-      const data = await response.json();
-      const html = data.content;
-      return html ?? "";
-    }
-  } catch (error) {
-    console.error(`[Playwright][c] Error fetching url: ${url} -> ${error}`);
-    return "";
-  }
-}
-
 export async function scrapWithFetch(url: string): Promise<string> {
   try {
     const response = await axios.get(url);
@@ -181,10 +108,7 @@ export async function scrapWithFetch(url: string): Promise<string> {
  */
 function getScrapingFallbackOrder(defaultScraper?: string) {
   const availableScrapers = baseScrapers.filter(scraper => {
-    switch (scraper) {
-      case "scrapingBee":
-      case "scrapingBeeLoad":
-        return !!process.env.SCRAPING_BEE_API_KEY;
+    switch (scraper) {      
       case "fire-engine":
         return !!process.env.FIRE_ENGINE_BETA_URL;
       case "playwright":
@@ -194,7 +118,7 @@ function getScrapingFallbackOrder(defaultScraper?: string) {
     }
   });
 
-  const defaultOrder = ["scrapingBee", "fire-engine", "playwright", "scrapingBeeLoad", "fetch"];
+  const defaultOrder = ["fire-engine", "fetch"];
   const filteredDefaultOrder = defaultOrder.filter((scraper: typeof baseScrapers[number]) => availableScrapers.includes(scraper));
   const uniqueScrapers = new Set(defaultScraper ? [defaultScraper, ...filteredDefaultOrder, ...availableScrapers] : [...filteredDefaultOrder, ...availableScrapers]);
   const scrapersInOrder = Array.from(uniqueScrapers);
@@ -230,26 +154,7 @@ export async function scrapSingleUrl(
         if (process.env.FIRE_ENGINE_BETA_URL) {
           text = await scrapWithFireEngine(url);
         }
-        break;
-      case "scrapingBee":
-        if (process.env.SCRAPING_BEE_API_KEY) {
-          text = await scrapWithScrapingBee(
-            url,
-            "domcontentloaded",
-            pageOptions.fallback === false ? 7000 : 15000
-          );
-        }
-        break;
-      case "playwright":
-        if (process.env.PLAYWRIGHT_MICROSERVICE_URL) {
-          text = await scrapWithPlaywright(url);
-        }
-        break;
-      case "scrapingBeeLoad":
-        if (process.env.SCRAPING_BEE_API_KEY) {
-          text = await scrapWithScrapingBee(url, "networkidle2");
-        }
-        break;
+        break;                  
       case "fetch":
         text = await scrapWithFetch(url);
         break;
