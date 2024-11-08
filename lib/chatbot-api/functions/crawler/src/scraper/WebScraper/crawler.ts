@@ -4,7 +4,7 @@ import { URL } from "url";
 import { getLinksFromSitemap } from "./sitemap";
 import async from "async";
 import { Progress } from "../../lib/entities";
-import { scrapSingleUrl, scrapWithScrapingBee } from "./single_url";
+import { scrapSingleUrl } from "./single_url";
 import robotsParser from "robots-parser";
 import fs from "fs";
 
