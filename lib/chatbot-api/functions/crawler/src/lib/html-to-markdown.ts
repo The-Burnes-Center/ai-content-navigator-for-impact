@@ -1,12 +1,12 @@
 
 // import * as TurndownService from "turndown";
 // import * as turndownPluginGfm from 'joplin-turndown-plugin-gfm';
-import TurndownService from 'turndown';
-import { gfm } from 'joplin-turndown-plugin-gfm';
+// import TurndownService from 'turndown';
+// import { gfm } from 'joplin-turndown-plugin-gfm';
 
 export function parseMarkdown(html: string) {
-  // var TurndownService  = require("turndown");
-  // var turndownPluginGfm = require('joplin-turndown-plugin-gfm')
+  var TurndownService  = require("turndown");
+  var turndownPluginGfm = require('joplin-turndown-plugin-gfm')
 
   console.log(typeof TurndownService)
   const turndownService = new TurndownService();
@@ -25,8 +25,8 @@ export function parseMarkdown(html: string) {
     },
   });
 
-  // var gfm = turndownPluginGfm.gfm;
-  turndownService.use(gfm);
+  var gfm = turndownPluginGfm.gfm;
+  // turndownService.use(gfm);
   let markdownContent = turndownService.turndown(html);
 
   // multiple line links
