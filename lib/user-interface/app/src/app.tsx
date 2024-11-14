@@ -21,7 +21,7 @@ function App() {
       <Router>
         <GlobalHeader />
         <div style={{ height: "56px", backgroundColor: "#000716" }}>&nbsp;</div>
-        <div>
+        <div style={{top: "0px"}}>
           <Routes>            
             <Route
                 index
