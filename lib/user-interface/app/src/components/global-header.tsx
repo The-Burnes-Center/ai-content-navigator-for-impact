@@ -8,6 +8,7 @@ import { StorageHelper } from "../common/helpers/storage-helper";
 import { Auth } from "aws-amplify";
 import useOnFollow from "../common/hooks/use-on-follow";
 import { CHATBOT_NAME } from "../common/constants";
+import BrandBanner from "./chatbot/BrandBanner";
 
 export default function GlobalHeader() {
   const onFollow = useOnFollow();
@@ -24,10 +25,10 @@ export default function GlobalHeader() {
 
   return (
     <div
-      style={{ zIndex: 1002, top: 0, left: 0, right: 0, position: "fixed" }}
+      style={{ zIndex: 1002, top: 0, left: 0, right: 0, position: "sticky" }}
       id="awsui-top-navigation"
     >
-      
+      <BrandBanner/>
       <TopNavigation
         identity={{
           href: "/",

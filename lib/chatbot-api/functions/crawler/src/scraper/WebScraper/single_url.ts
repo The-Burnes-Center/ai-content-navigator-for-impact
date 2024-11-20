@@ -79,7 +79,11 @@ export async function scrapWithFireEngine(
 
 export async function scrapWithFetch(url: string): Promise<string> {
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: {
+          'X-Scraped-By': 'EEA-GRANTS-NAV-CRAWLER',          
+      }
+  });
     if (!(response.status == 200)) {
       console.error(
         `[Fetch] Error fetching url: ${url} with status: ${response.status}`

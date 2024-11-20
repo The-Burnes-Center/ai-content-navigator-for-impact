@@ -184,7 +184,7 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
           content: receivedData,
           metadata: {},
         },
-        ...messageHistoryRef.current
+        // ...messageHistoryRef.current
       ];
       props.setMessageHistory(messageHistoryRef.current);
 

@@ -247,7 +247,11 @@ export class WebCrawler {
         const page = await scrapSingleUrl(url, {includeHtml: true});
         content = page.html ?? ""
       } else {
-        const response = await axios.get(url);
+        const response = await axios.get(url, {
+          headers: {
+              'X-Scraped-By': 'EEA-GRANTS-NAV-CRAWLER',          
+          }
+      });
         if (response.status == 403) {
           console.log(`Could not crawl ${url}`)
         }
