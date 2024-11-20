@@ -13,13 +13,13 @@ scraper.setOptions({
   mode: "crawl",
   concurrentRequests: 4,
   crawlerOptions: {
-    excludes: ['^\\s*$', ".*doc.*", ".*guide.*", '.*employment.*',
-      '.*topics.*', ".*mass.gov$", ".*mass.gov\\/$", ".*mass.gov\\/#$",
-      ".*massachusetts-state-organizations-a-to-z.*", ".*list.*",
-      ".*help-us-test.*", ".*user-panel.*", ".*massgov-site-policies.*",
-      ".*privacypolicy.*", ".*hunting.*", ".*event.*", ".*executive-orders.*", ".*news.*", ".*fishing.*", ".*dcr-updates.*"],
+    // excludes: ['^\\s*$', ".*doc.*", ".*guide.*", '.*employment.*',
+    //   '.*topics.*', ".*mass.gov$", ".*mass.gov\\/$", ".*mass.gov\\/#$",
+    //   ".*massachusetts-state-organizations-a-to-z.*", ".*list.*",
+    //   ".*help-us-test.*", ".*user-panel.*", ".*massgov-site-policies.*",
+    //   ".*privacypolicy.*", ".*hunting.*", ".*event.*", ".*executive-orders.*", ".*news.*", ".*fishing.*", ".*dcr-updates.*"],
     maxCrawledLinks: 2000,
-    maxDepth: 2,
+    maxDepth: 1,
     // mode: "fast"
     
   }
