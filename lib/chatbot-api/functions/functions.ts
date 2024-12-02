@@ -8,6 +8,10 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from "aws-cdk-lib/aws-s3";
 import { aws_bedrock as bedrock } from 'aws-cdk-lib';
 
+import * as events from 'aws-cdk-lib/aws-events';
+import * as targets from 'aws-cdk-lib/aws-events-targets';
+
+
 interface LambdaFunctionStackProps {  
   readonly wsApiEndpoint : string;    
   readonly KBIndex : bedrock.CfnKnowledgeBase;
@@ -77,6 +81,13 @@ export class LambdaFunctionStack extends cdk.Stack {
       }));
       
       this.chatFunction = websocketAPIFunction;    
+
+    // Create an EventBridge rule to trigger ScraperFunction
+    const scraperRule = new events.Rule(this, 'ScraperScheduleRule', {
+      schedule: events.Schedule.expression('rate(14 days)'), // Called every two weeks
+    });
+    
+    scraperRule.addTarget(new targets.LambdaFunction(scraperFunction));
 
   }
 }
