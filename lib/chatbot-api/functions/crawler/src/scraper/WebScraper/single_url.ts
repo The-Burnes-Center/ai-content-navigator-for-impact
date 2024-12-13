@@ -81,7 +81,7 @@ export async function scrapWithFetch(url: string): Promise<string> {
   try {
     const response = await axios.get(url, {
       headers: {
-          'X-Scraped-By': 'EEA-GRANTS-NAV-CRAWLER',          
+          'crawl-auth': process.env.HEADER,          
       }
   });
     if (!(response.status == 200)) {
