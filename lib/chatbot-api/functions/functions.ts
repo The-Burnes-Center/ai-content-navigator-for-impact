@@ -79,7 +79,7 @@ export class LambdaFunctionStack extends cdk.Stack {
         ],
         resources: [props.knowledgeBucket.bucketArn, props.knowledgeBucket.bucketArn+"/*" ]
       }));
-      
+
       this.chatFunction = websocketAPIFunction;    
 
     // Create an EventBridge rule to trigger ScraperFunction
@@ -88,6 +88,47 @@ export class LambdaFunctionStack extends cdk.Stack {
     });
     
     scraperRule.addTarget(new targets.LambdaFunction(scraperFunction));
+
+      const syncFunction = new lambda.Function(scope, 'SyncFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X, // Choose any supported Node.js runtime
+        code: lambda.Code.fromAsset(path.join(__dirname, 'sync-handler')), // Points to the sync handler directory
+        handler: 'index.handler', // Entry point of the function
+        environment: {
+          "BUCKET" : props.knowledgeBucket.bucketName,
+          "INDEX_ID": props.KBIndex.attrKnowledgeBaseId,
+          "DATA_SOURCE_ID": props.KBSource.attrDataSourceId,
+        },
+        timeout: cdk.Duration.seconds(900),
+      });
+
+      syncFunction.addToRolePolicy(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: ['s3:GetObject', 's3:ListBucket'],
+          resources: [props.knowledgeBucket.bucketArn, props.knowledgeBucket.bucketArn+"/*"],
+        })
+      );
+
+      syncFunction.addToRolePolicy(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: ['bedrock:SyncKnowledgeBase'],
+          resources: [props.KBIndex.attrKnowledgeBaseArn],
+        })
+      );
+
+      const scraperSyncRule = new events.Rule(this, 'ScraperSyncRule', {
+        eventPattern: {
+          source: ['aws.lambda'],
+          detail: {
+            functionName: [scraperFunction.functionName],
+            status: ['SUCCEEDED'],
+          },
+        },
+      });
+
+      scraperSyncRule.addTarget(new targets.LambdaFunction(syncFunction));
+
 
   }
 }
