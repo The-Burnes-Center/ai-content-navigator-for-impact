@@ -5,7 +5,8 @@ import {
   Spinner,
   Box,
   Select,
-  SelectProps
+  SelectProps,
+  Input
 } from "@cloudscape-design/components";
 import {
   Dispatch,
@@ -41,6 +42,8 @@ import { Utils } from "../../common/utils";
 import { SessionRefreshContext } from "../../common/session-refresh-context"
 import { useNotifications } from "../notif-manager";
 import { Autocomplete } from "@aws-amplify/ui-react";
+import Modal from '@cloudscape-design/components/modal';
+import { Header } from '@cloudscape-design/components';
 
 const defaultPrompt = `Based on the project and organization description provided by the user, recommend the most relevant specific grant programs offered by the Massachusetts Energy and Environment Office that would be a good fit. Always provide more than three grant programs that could be related to the users search, formatted as follows:
 - **Grant Program Name (as a bold header):**
@@ -109,6 +112,9 @@ const AIWarning = () => {
   );
 };
 
+
+
+
 export interface ChatInputPanelProps {
   running: boolean;
   setRunning: Dispatch<SetStateAction<boolean>>;
@@ -145,6 +151,11 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
     ReadyState.OPEN
   );
   const messageHistoryRef = useRef<ChatBotHistoryItem[]>([]);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
+  const [feedbackType, setFeedbackType] = useState("");
+  const [feedbackTopic, setFeedbackTopic] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [feedbackEmail, setFeedbackEmail] = useState("");
 
   useEffect(() => {
     messageHistoryRef.current = props.messageHistory;
@@ -155,6 +166,117 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
       setState((state) => ({ ...state, value: transcript }));
     }
   }, [transcript]);
+
+  const handleFeedback = (type: "thumbs-up" | "thumbs-down") => {
+    if(type === "thumbs-down"){
+      setFeedbackModalVisible(true);
+    } else{
+      console.log("Positive feedback received");
+    }
+  };
+
+  const submitFeedback = async () => {
+    const feedback = {
+      type: feedbackType,
+      topic: feedbackTopic,
+      message: feedbackMessage
+    };
+
+    try{
+      const response = await apiClient.userFeedback.sendUserFeedback(feedback);
+      console.log("Feedback submitted successfully");
+      setFeedbackModalVisible(false);
+    } catch (error) {
+      console.error("Failed to submit feedback:", error);
+    }
+    
+  };
+
+  const FeedbackTab = () => {
+    return (
+    <Box margin={{ top: "s" }} textAlign="center">
+        <Button 
+          iconName = "thumbs-up"
+          variant="link"
+          onClick={() => handleFeedback("thumbs-up")}
+          > ThumbsUp</Button>
+        <Button
+          iconName = "thumbs-down"
+          variant="link"
+          onClick={() => handleFeedback("thumbs-down")}
+          >Thumbs-Down</Button>
+      </Box>
+    );
+  };
+
+  const FeedbackModal = ({ visible, 
+    onClose,
+    onSubmit,
+    feedbackType, 
+    setFeedbackType, 
+    feedbackTopic, 
+    setFeedbackTopic, 
+    feedbackMessage, 
+    setFeedbackMessage }) => {
+      const typeOptions = [
+        { label: "General", value: "General" },
+        { label: "UI", value: "UI" },
+        { label: "Accuracy", value: "Accuracy" },
+        { label: "Unhappy", value: "Unhappy" },
+        { label: "Other", value: "Other" },
+      ];
+
+      const topicOptions = [
+        { label: "UI", value: "UI" },
+        { label: "Functionality", value: "Functionality" },
+        { label: "Accuracy", value: "Accuracy" },
+        { label: "Other", value: "Other" },
+      ];
+    return (
+      <Modal
+        visible={visible}
+        onClose={onClose}
+        header = "Submit Feedback!"
+        footer = {
+          <Box float = "right">
+            <Button variant="link" onClick = {onClose}>
+              Cancel
+              </Button>
+            <Button variant="primary" onClick = {onSubmit}>
+               Submit 
+               </Button>
+          </Box>
+        }
+        >
+          <Box margin={{ bottom: "m" }}>
+            <Select
+              options = {typeOptions}
+              selectedOption={typeOptions.find((option) => option.value === feedbackType) || null}
+              onChange={({ detail }) => setFeedbackType(detail.selectedOption.value)}
+              placeholder="Select Feedback Type"
+              label="Feedback Type"
+            />
+            </Box>
+            <Box margin={{ bottom: "m" }}>
+              <Select
+              options={topicOptions}
+              selectedOption={topicOptions.find((option) => option.value === feedbackTopic) || null}
+              onChange={({ detail }) => setFeedbackTopic(detail.selectedOption.value)}
+              placeholder="Select Feedback Topic"
+              label="Feedback Topic"
+            />
+            </Box>
+            <Box>
+              <TextareaAutosize
+                value = {feedbackMessage}
+                onChange = {(e) => setFeedbackMessage(e.target.value)}
+                placeholder = "Enter Feedback Message"
+                label = "Feedback Message" 
+              />
+            </Box>
+        </Modal>
+    );
+  };
 
   // THIS IS THE ALL-IMPORTANT MESSAGE SENDING FUNCTION
   const handleSendMessage = async () => {
@@ -436,6 +558,17 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
             <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
               <div style={{ marginTop: '30px' }}>
                 <AIWarning />
+                <FeedbackTab />
+                <FeedbackModal
+                  visible={feedbackModalVisible}
+                  onClose={() => setFeedbackModalVisible(false)}
+                  onSubmit={submitFeedback}
+                  feedbackType={feedbackType}
+                  setFeedbackType={setFeedbackType}
+                  feedbackTopic={feedbackTopic}
+                  setFeedbackTopic={setFeedbackTopic}
+                  feedbackMessage={feedbackMessage}
+                  setFeedbackMessage={setFeedbackMessage} />
               </div>
             </div>
           </div>
