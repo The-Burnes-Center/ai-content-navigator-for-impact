@@ -4,7 +4,14 @@ import { AppConfig } from "../types";
 export class UserFeedbackClient {
   private readonly API;
   constructor(protected _appConfig: AppConfig) {
-    this.API = _appConfig.httpEndpoint.slice(0,-1);}
+    console.log("UserFeedbackClient AppConfig:", _appConfig);
+    if (!_appConfig?.httpEndpoint || typeof _appConfig.httpEndpoint !== "string") {
+      throw new Error("Invalid or missing httpEndpoint in AppConfig");
+    }
+      this.API = _appConfig.httpEndpoint.replace(/\/$/, "");
+      console.log("UserFeedbackClient API Endpoint:", this.API);
+      //this.API = _appConfig.httpEndpoint.slice(0,-1);
+    }
     async sendUserFeedback(feedbackData: { type: string; topic: string; message: string}) {
       try{
         const response = await fetch(`${this.API}/user-feedback`, {

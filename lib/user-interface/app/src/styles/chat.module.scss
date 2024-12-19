@@ -112,6 +112,18 @@
   float: right;
 }
 
+[data-feedback-tab = "true"] {
+  border: none !important; /* White border */
+  box-shadow: none !important; /* Remove shadow */
+  background-color: white !important; /* Ensure background is white */
+}
+
+.feedback-modal [data-modal-style="modal"] {
+  border: none !important; /* White border */
+  box-shadow: none !important; /* Remove shadow */
+  background-color: white !important; /* Ensure background is white */
+}
+
 .btn_chabot_message_actions {
   display: flex;
   align-items: center;

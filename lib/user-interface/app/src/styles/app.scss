@@ -63,6 +63,19 @@ body.awsui-dark-mode {
   }
 }
 
+.awsui-modal{
+  border: 2px solid white !important;
+  box-shadow: none !important;
+  background-color: white !important;
+}
+
+[data-modal-style="modal"] {
+  border: 2px solid white !important; /* White border */
+  box-shadow: none !important; /* Remove shadow */
+  background-color: white !important; /* Ensure background is white */
+}
+
+
 .new-session-button {
  margin-left: auto; 
 }

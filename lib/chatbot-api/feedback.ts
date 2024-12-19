@@ -4,9 +4,10 @@ const dynamoClient = new DynamoDBClient({ region: "us-east-1" });
 
 exports.handler = async (event) => {
     try {
-        const { feedbackType, feedbackTopic, feedbackMessage} = JSON.parse(event.body);
+        // Update the destructuring to match the new keys
+        const { type, topic, message } = JSON.parse(event.body);
 
-        if (!feedbackType || !feedbackTopic || !feedbackMessage) {
+        if (!type || !topic || !message) {
             return {
                 statusCode: 400,
                 body: JSON.stringify({ error: "Missing required fields" }),
@@ -16,9 +17,9 @@ exports.handler = async (event) => {
         const params = {
             TableName: "UserFeedbackTableEEA",
             Item: {
-                type: { S: feedbackType },
-                topic: { S: feedbackTopic },
-                message: { S: feedbackMessage },
+                type: { S: type },
+                topic: { S: topic },
+                message: { S: message },
                 timestamp: { S: new Date().toISOString() },
             },
         };
