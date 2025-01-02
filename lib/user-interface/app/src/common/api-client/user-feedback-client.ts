@@ -14,7 +14,7 @@ export class UserFeedbackClient {
     }
     async sendUserFeedback(feedbackData: { type: string; topic: string; message: string}) {
       try{
-        const response = await fetch(`${this.API}/user-feedback`, {
+        const response = await fetch(`${this.API}/feedback`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

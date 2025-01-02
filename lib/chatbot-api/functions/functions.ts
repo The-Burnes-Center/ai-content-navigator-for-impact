@@ -11,19 +11,24 @@ import { aws_bedrock as bedrock } from 'aws-cdk-lib';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import { ProductStack } from 'aws-cdk-lib/aws-servicecatalog';
+
 
 interface LambdaFunctionStackProps {  
   readonly wsApiEndpoint : string;    
   readonly KBIndex : bedrock.CfnKnowledgeBase;
   readonly KBSource : bedrock.CfnDataSource;  
   readonly knowledgeBucket : s3.Bucket;
+  readonly feedbackTable: dynamodb.ITable;
 }
 
 export class LambdaFunctionStack extends cdk.Stack {  
   public readonly chatFunction : lambda.Function;  
 
   constructor(scope: Construct, id: string, props: LambdaFunctionStackProps) {
-    super(scope, id);    
+    super(scope, id);   
+    
 
       // Define the Lambda function resource
       const websocketAPIFunction = new lambda.Function(scope, 'ChatHandlerFunction', {
@@ -72,6 +77,27 @@ export class LambdaFunctionStack extends cdk.Stack {
         timeout: cdk.Duration.seconds(900)
       });
 
+      const feedbackFunction = new lambda.Function(this, 'FeedbackFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X, // Specify the runtime version
+        code: lambda.Code.fromAsset(path.join(__dirname, '../chatbot-api/feedback')), // Points to the lambda directory
+        handler: 'feedback.handleFeedback', // Points to the 'handler' file in the lambda directory
+        environment: {
+          "FEEDBACK_TABLE": props.feedbackTable.tableName,
+        },
+        timeout: cdk.Duration.seconds(300)
+        }
+      );
+      
+      props.feedbackTable.grantWriteData(feedbackFunction);
+
+      feedbackFunction.addToRolePolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'dynamodb:*'
+        ],
+        resources: [props.feedbackTable.tableArn]
+      }));
+
       scraperFunction.addToRolePolicy(new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: [
@@ -90,4 +116,6 @@ export class LambdaFunctionStack extends cdk.Stack {
     scraperRule.addTarget(new targets.LambdaFunction(scraperFunction));
 
   }
+
+  
 }
