@@ -10,7 +10,6 @@ import { TableStack } from "./tables/tables"
 
 import { WebSocketLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import { Construct } from "constructs";
-import { tables } from 'joplin-turndown-plugin-gfm';
 
 export class ChatBotApi extends Construct {  
   public readonly wsAPI: WebsocketBackendAPI;  

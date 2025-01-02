@@ -12,7 +12,7 @@ import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import { ProductStack } from 'aws-cdk-lib/aws-servicecatalog';
+// import { ProductStack } from 'aws-cdk-lib/aws-servicecatalog';
 
 
 interface LambdaFunctionStackProps {  

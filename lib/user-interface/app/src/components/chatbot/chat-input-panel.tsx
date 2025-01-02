@@ -100,10 +100,10 @@ const AIWarning = () => {
   return (
     <Box textAlign="center">
       <h4 style={{ fontFamily: "Calibri, sans-serif", fontWeight: "500", fontSize: 15 }}>
-        AI Models can make mistakes. Make sure to verify all information.
+        This tool uses AI assistive technology to provide information about grants, based on the input query. To learn more, try this link: <a href="https://www.firecrawl.dev/" target="_blank">FireCrawl</a> 
       </h4>
       <h4 style={{ fontFamily: "Calibri, sans-serif", fontWeight: "500", fontSize: 15 }}>
-        This tool uses AI assistive technology to provide information about grants, based on the input query. To learn more, try this link: <a href="https://www.firecrawl.dev/" target="_blank">FireCrawl</a> 
+        AI Models can make mistakes. Make sure to verify all information.
       </h4>
     </Box>
   );
@@ -223,18 +223,20 @@ interface FeedbackTabProps {
 
 const FeedbackTab = React.memo(({ onFeedbackDown, onFeedbackUp }: FeedbackTabProps) => {
   return (
-    <div style={{borderColor: "white", borderWidth: "0px",   display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center"}} >
+    <div style ={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center"}}>
+    <div style={{border: "0.01rem outset #000716", borderRadius: "10px", display:"inline-block", padding: "4px 8px", flexDirection:"column", justifyContent:"center", alignItems:"center", textAlign: "center"}} >
     <Box>
       <h4 style={{ fontFamily: "Calibri, sans-serif", fontWeight: "500", fontSize: 15, justifyContent:"center", alignItems:"center" }}>
-        Would you like to leave feedback?
+        Did you find the grant info you're looking for?
       </h4>
-      <Button variant="link" onClick={onFeedbackDown}>
+      <Button variant="link" onClick={onFeedbackUp}>
         Yes
       </Button>
-      <Button variant="link" onClick={onFeedbackUp}>
+      <Button variant="link" onClick={onFeedbackDown}>
         No
       </Button>
     </Box>
+  </div>
   </div>
   );
 });
@@ -620,11 +622,7 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
         </SpaceBetween>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <main style={{ flex: 1, overflowY: "auto" }}>
-            <SpaceBetween direction="vertical" size="xs">
-              <Container>
-                <FeedbackContainer apiClient={apiClient} showFlashMessage={showFlashMessage} />
-              </Container>
-            </SpaceBetween>
+            <FeedbackContainer apiClient={apiClient} showFlashMessage={showFlashMessage} />
           </main>
         </div>
       </main>
