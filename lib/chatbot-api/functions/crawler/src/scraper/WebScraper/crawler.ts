@@ -249,7 +249,7 @@ export class WebCrawler {
       } else {
         const response = await axios.get(url, {
           headers: {
-              'X-Scraped-By': 'EEA-GRANTS-NAV-CRAWLER',          
+              'crawl-auth': process.env.HEADER,          
           }
       });
         if (response.status == 403) {

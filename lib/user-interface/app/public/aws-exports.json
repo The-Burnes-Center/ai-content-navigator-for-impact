@@ -1,8 +1,9 @@
 {
+
   "Auth": {
     "region": "us-east-1",
     "userPoolId": "us-east-1_BHned34tF",
-    "userPoolWebClientId": "4qn890ga2uh7a04ia5hkqaep3b",
+    "userPoolWebClientId": "4qn890ga2uh7a04ia5hkqaep3b",    
     "oauth": {
       "domain": "sandbox-mass-gov.auth.us-east-1.amazoncognito.com",
       "scope": ["email", "openid", "profile"],
@@ -10,6 +11,7 @@
       "redirectSignOut": "https://myapplications.microsoft.com/",
       "responseType": "code"
     }
+    
   },
   "aws_appsync_graphqlEndpoint": "https://kein73egq5bcdc2q5jo2w27czi.appsync-api.us-east-1.amazonaws.com/graphql",
   "aws_appsync_region": "us-east-1",
@@ -28,7 +30,5 @@
     "default_embeddings_model": "sagemaker::1024::intfloat/multilingual-e5-large",
     "default_cross_encoder_model": "sagemaker::cross-encoder/ms-marco-MiniLM-L-12-v2",
     "privateWebsite": false
-  },
-  "httpEndpoint": "http://localhost:3000/api",
-  "wsEndpoint": "ws://localhost:3000/ws" 
+  }
 }

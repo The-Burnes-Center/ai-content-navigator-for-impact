@@ -21,8 +21,6 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@massds/mayflower": "^13.1.0",
     "aws-amplify": "^5.3.21",
-    "body-parser": "^1.20.3",
-    "express": "^4.21.2",
     "luxon": "^3.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
