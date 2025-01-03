@@ -4,7 +4,38 @@ import { AppConfig } from "../types";
 export class UserFeedbackClient {
   private readonly API;
   constructor(protected _appConfig: AppConfig) {
-    this.API = _appConfig.httpEndpoint.slice(0,-1);}
+    console.log("UserFeedbackClient AppConfig:", _appConfig);
+    if (!_appConfig?.httpEndpoint || typeof _appConfig.httpEndpoint !== "string") {
+      throw new Error("Invalid or missing httpEndpoint in AppConfig");
+    }
+      this.API = _appConfig.httpEndpoint.replace(/\/$/, "");
+      console.log("UserFeedbackClient API Endpoint:", this.API);
+      //this.API = _appConfig.httpEndpoint.slice(0,-1);
+    }
+    async sendUserFeedback(feedbackData: { type: string; topic: string; message: string}) {
+      try{
+        const response = await fetch(`${this.API}/feedback`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(feedbackData),
+        });
+  
+      if(!response.ok){
+        const error = await response.text();
+        throw new Error(`Failed to send feedback: ${error}`);
+    }
+  
+    console.log('Feedback sent successfully');
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to send feedback:', error);
+    throw error;
+  }
+  }
+
+    /*
 
   // Takes in a piece of feedback (which has a prompt, completion, session ID, and the actual feedback (1 or 0))
   async sendUserFeedback(feedbackData) {
@@ -21,6 +52,10 @@ export class UserFeedbackClient {
       body: JSON.stringify({ feedbackData })
     });
   }
+ 
+
+
+
 
   async downloadFeedback(topic : string, startTime? : string, endTime? : string) {
     // const auth = await Utils.authenticate();
@@ -55,6 +90,7 @@ export class UserFeedbackClient {
     
 
   }
+
 
   async getUserFeedback(topic : string, startTime? : string, endTime? : string, nextPageToken? : string) {
     
@@ -93,4 +129,5 @@ export class UserFeedbackClient {
     });
     
   }
+       */
 }

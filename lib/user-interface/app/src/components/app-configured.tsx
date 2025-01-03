@@ -20,6 +20,10 @@ export default function AppConfigured() {
   // this is the authentication provider that Cognito needs
   const federatedIdName : string = "AzureAD-OIDC-MassGov";
   //trigger authentication state when needed
+
+  useEffect(() => {
+    console.log("loading...", config);
+  }, [config]);
   useEffect(() => {
     (async () => {
       try {
@@ -27,6 +31,8 @@ export default function AppConfigured() {
         const awsExports = await result.json();
         Amplify.configure(awsExports);
         setConfigured(true);
+
+        console.log("Loaded aws-exports.json:", awsExports);
         // const currentUser = await Auth.currentAuthenticatedUser();
         // // console.log("Authenticated user:", currentUser);
         //setAuthenticated(true);

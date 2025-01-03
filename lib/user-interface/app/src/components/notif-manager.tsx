@@ -12,36 +12,45 @@ export const NotificationContext = createContext({
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
-  const addNotification = (type, content) : String => {
-    const id = uuidv4();  // Generate a UUID for each new notification
+  const addNotification = (type, content) => {
+    const id = uuidv4();
+    console.log("Generated notification ID:", id);
 
-    setNotifications(prev => [...prev, {
-      id: id,
-      type: type,
-      content: content,
-      date: new Date().getTime(),
-      dismissible: true,
-      dismissLabel: "Hide notification",
-      onDismiss: () => removeNotification(id)
-    }]);    
-    console.log("Added notification", id);
+    setNotifications((prev) => [
+      ...prev,
+      {
+        id,
+        type,
+        content,
+        date: new Date().getTime(),
+        dismissible: true,
+        dismissLabel: "Hide notification",
+        onDismiss: () => removeNotification(id),
+      },
+    ]);
+
+    console.log("Notifications after add:", notifications);
     return id;
   };
 
   const removeNotification = (id) => {
-    setNotifications(prev => {
-      const updatedNotifications = prev.filter(notif => notif.id !== id);
-      console.log("Removing notification", id);
-      console.log("Updated notifications", updatedNotifications);
+    setNotifications((prev) => {
+      const updatedNotifications = prev.filter((notif) => notif.id !== id);
+      console.log("Removing notification ID:", id);
+      console.log("Notifications after remove:", updatedNotifications);
       return updatedNotifications;
     });
   };
 
   return (
-    <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>
+    <NotificationContext.Provider
+      value={{ notifications, addNotification, removeNotification }}
+    >
       {children}
     </NotificationContext.Provider>
   );
 };
+
+  
 
 export const useNotifications = () => useContext(NotificationContext);

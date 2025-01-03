@@ -6,6 +6,7 @@ import { LambdaFunctionStack } from "./functions/functions"
 import { S3BucketStack } from "./buckets/buckets"
 import { OpenSearchStack } from "./opensearch/opensearch";
 import { KnowledgeBaseStack } from "./knowledge-base/knowledge-base"
+import { TableStack } from "./tables/tables"
 
 import { WebSocketLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import { Construct } from "constructs";
@@ -24,13 +25,15 @@ export class ChatBotApi extends Construct {
     
     const websocketBackend = new WebsocketBackendAPI(this, "WebsocketBackend", {})
     this.wsAPI = websocketBackend;
+    const tables = new TableStack(this, "TableStack", {})
 
     const lambdaFunctions = new LambdaFunctionStack(this, "LambdaFunctions",
       {
         wsApiEndpoint: websocketBackend.wsAPIStage.url,        
         KBIndex: knowledgeBase.knowledgeBase,
         KBSource: knowledgeBase.dataSource,      
-        knowledgeBucket: buckets.knowledgeBucket
+        knowledgeBucket: buckets.knowledgeBucket,
+        feedbackTable: tables.feedbackTable
       })
 
     websocketBackend.wsAPI.addRoute('getChatbotResponse', {

@@ -9,15 +9,15 @@ export interface AppConfig {
     oauth: {
       domain: string,
       scope: string[],
-      redirectSignIn: string,
-      // redirectSignOut: "https://myapplications.microsoft.com/",
+      redirectSignIn: string, // Dynamic string
       responseType: string,
     }
   },
-  httpEndpoint : string,
-  wsEndpoint : string,
-  federatedSignInProvider : string,
+  httpEndpoint: string, // Allow dynamic values
+  wsEndpoint: string,   // Allow dynamic values
+  federatedSignInProvider: string, // Use "string" for flexibility
 }
+
 
 // export interface NavigationPanelState {
 //   collapsed?: boolean;
