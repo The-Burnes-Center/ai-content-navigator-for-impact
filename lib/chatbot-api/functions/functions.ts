@@ -79,7 +79,7 @@ export class LambdaFunctionStack extends cdk.Stack {
 
       const feedbackFunction = new lambda.Function(this, 'FeedbackFunction', {
         runtime: lambda.Runtime.NODEJS_20_X, // Specify the runtime version
-        code: lambda.Code.fromAsset(path.join(__dirname, '../chatbot-api/feedback')), // Points to the lambda directory
+        code: lambda.Code.fromAsset(path.join(__dirname, '../feedback')), // Points to the lambda directory
         handler: 'feedback.handleFeedback', // Points to the 'handler' file in the lambda directory
         environment: {
           "FEEDBACK_TABLE": props.feedbackTable.tableName,
@@ -114,6 +114,8 @@ export class LambdaFunctionStack extends cdk.Stack {
     });
     
     scraperRule.addTarget(new targets.LambdaFunction(scraperFunction));
+
+    /* this function still needs to be created, commenting it out until it's ready to deploy
 
       const syncFunction = new lambda.Function(scope, 'SyncFunction', {
         runtime: lambda.Runtime.NODEJS_20_X, // Choose any supported Node.js runtime
@@ -154,7 +156,7 @@ export class LambdaFunctionStack extends cdk.Stack {
       });
 
       scraperSyncRule.addTarget(new targets.LambdaFunction(syncFunction));
-
+    */
 
   }
 
