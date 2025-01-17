@@ -199,7 +199,7 @@ const FeedbackModal = React.memo(({
       <Box>
         <TextareaAutosize
           value={feedbackMessage}
-          onChange={(e) => setFeedbackMessage(e.target.value)}
+          onChange={(e: { target: { value: any; }; }) => setFeedbackMessage(e.target.value)}
           placeholder="Enter Feedback Message"
           minRows={3}
           style={{
@@ -350,7 +350,7 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
 
   useEffect(() => {
     if (transcript) {
-      setState((state) => ({ ...state, value: transcript }));
+      setState((state: any) => ({ ...state, value: transcript }));
     }
   }, [transcript]);
 
@@ -577,8 +577,8 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
                 minRows={1}
                 spellCheck={true}
                 autoFocus
-                onChange={(e) => setState((state) => ({ ...state, value: e.target.value }))}
-                onKeyDown={(e) => {
+                onChange={(e: { target: { value: any; }; }) => setState((state: any) => ({ ...state, value: e.target.value }))}
+                onKeyDown={(e: { key: string; shiftKey: any; preventDefault: () => void; }) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     handleSendMessage();
